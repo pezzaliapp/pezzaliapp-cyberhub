@@ -1,0 +1,61 @@
+{
+  "_nota": "Per aggiungere una risorsa basta inserire un oggetto in 'resources'. Campi: cat, title, desc, url, host, accent, tag. Opzionali: embed (true se il sito accetta di essere mostrato nel pannello interno; default false), soon (true per 'in arrivo').",
+  "sections": [
+    { "f": "map",    "label": "Mappe live · radar",    "ic": "M3 12h4l2 5 4-12 2 7h6" },
+    { "f": "learn",  "label": "Impara giocando",        "ic": "M5 5h14v10H5zM9 19h6M12 15v4" },
+    { "f": "read",   "label": "Approfondisci",          "ic": "M5 4h14v16l-7-3-7 3z" },
+    { "f": "career", "label": "Formazione e carriera",  "ic": "M2 9l10-5 10 5-10 5zM6 11v5c0 1 6 3 6 3s6-2 6-3v-5" },
+    { "f": "lab",    "label": "Il mio lab",             "ic": "M9 3v7L4 19a2 2 0 002 3h12a2 2 0 002-3l-5-9V3M9 3h6" }
+  ],
+  "resources": [
+    { "cat": "map", "accent": "#22d3ee", "tag": "radar", "embed": false, "title": "Kaspersky Cybermap", "host": "cybermap.kaspersky.com",
+      "desc": "Globo 3D con gli attacchi rilevati in tempo reale. La più spettacolare per il colpo d'occhio.",
+      "url": "https://cybermap.kaspersky.com/" },
+    { "cat": "map", "accent": "#22d3ee", "tag": "radar", "embed": false, "title": "Check Point ThreatMap", "host": "threatmap.checkpoint.com",
+      "desc": "Visione ampia delle minacce globali, sorgenti e bersagli degli attacchi.",
+      "url": "https://threatmap.checkpoint.com/" },
+    { "cat": "map", "accent": "#22d3ee", "tag": "radar", "embed": false, "title": "Radware Live Map", "host": "livethreatmap.radware.com",
+      "desc": "Attacchi in quasi tempo reale dalla rete di sensori (honeypot) di Radware.",
+      "url": "https://livethreatmap.radware.com/" },
+    { "cat": "map", "accent": "#22d3ee", "tag": "radar", "embed": false, "title": "Fortinet ThreatMap", "host": "fortiguard.fortinet.com",
+      "desc": "Ottima per seguire vulnerabilità e nuove campagne di attacco.",
+      "url": "https://fortiguard.fortinet.com/threat-map" },
+    { "cat": "map", "accent": "#22d3ee", "tag": "ddos", "embed": false, "title": "NETSCOUT Horizon", "host": "horizon.netscout.com",
+      "desc": "Il riferimento per gli attacchi DDoS: chi satura i server di traffico.",
+      "url": "https://horizon.netscout.com/" },
+    { "cat": "map", "accent": "#22d3ee", "tag": "radar", "embed": false, "title": "SonicWall Attack Map", "host": "attackmap.sonicwall.com",
+      "desc": "Origini, bersagli e tipi di attacco principali, vista sintetica.",
+      "url": "https://attackmap.sonicwall.com/live-attack-map/" },
+
+    { "cat": "learn", "accent": "#3ddc84", "tag": "gioco", "embed": false, "title": "Case 404", "host": "case404.kaspersky.com",
+      "desc": "Gioco investigativo di Kaspersky: risolvi un attacco ragionando come un analista SOC.",
+      "url": "https://case404.kaspersky.com/" },
+    { "cat": "learn", "accent": "#3ddc84", "tag": "lab", "embed": false, "title": "TryHackMe", "host": "tryhackme.com",
+      "desc": "Il miglior punto di partenza: percorsi guidati passo-passo, tutto nel browser.",
+      "url": "https://tryhackme.com/" },
+    { "cat": "learn", "accent": "#3ddc84", "tag": "lab", "embed": false, "title": "Hack The Box", "host": "hackthebox.com",
+      "desc": "Laboratori più avanzati per mettere alla prova attacco e difesa in ambiente legale.",
+      "url": "https://www.hackthebox.com/" },
+    { "cat": "learn", "accent": "#3ddc84", "tag": "sfide", "embed": true, "title": "OverTheWire", "host": "overthewire.org",
+      "desc": "Sfide da terminale, gratuite: imparare la riga di comando giocando.",
+      "url": "https://overthewire.org/wargames/" },
+
+    { "cat": "read", "accent": "#a78bfa", "tag": "dati", "embed": false, "title": "Kaspersky Statistiche", "host": "cybermap.kaspersky.com",
+      "desc": "Numeri reali: rilevamenti al secondo, paesi più colpiti, malware più diffusi.",
+      "url": "https://cybermap.kaspersky.com/stats" },
+    { "cat": "read", "accent": "#a78bfa", "tag": "blog", "embed": false, "title": "Kaspersky Buzz", "host": "cybermap.kaspersky.com",
+      "desc": "Notizie e analisi di sicurezza: ransomware, vulnerabilità, nuove campagne.",
+      "url": "https://cybermap.kaspersky.com/buzz" },
+    { "cat": "read", "accent": "#a78bfa", "tag": "glossario", "embed": false, "title": "Risorse dati (sigle)", "host": "cybermap.kaspersky.com",
+      "desc": "Cosa significano OAS, IDS, RMW (ransomware) e le altre sigle delle mappe.",
+      "url": "https://cybermap.kaspersky.com/subsystems" },
+
+    { "cat": "career", "accent": "#ffb347", "tag": "studio", "embed": true, "title": "ITS Academy Abruzzo", "host": "itsmeccanica.it",
+      "desc": "Percorso post-diploma in informatica e cybersecurity, con stage in azienda. Da qui partono i video.",
+      "url": "https://www.itsmeccanica.it/" },
+
+    { "cat": "lab", "accent": "#ffb347", "tag": "progetto", "soon": true, "title": "Honeypot SOC", "host": "in arrivo · gira in locale",
+      "desc": "La tua esca che registra chi prova ad attaccarti, con dashboard stile SOC. Da avviare sul tuo PC o VPS.",
+      "url": "#" }
+  ]
+}

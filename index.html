@@ -2,8 +2,41 @@
 <html lang="it">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>PezzaliApp · Cyber Hub</title>
+<meta name="description" content="Punto di comando per la cybersecurity: mappe di attacchi live, giochi formativi come Case 404, blog e corsi. Tutto in un'unica griglia, gratis e installabile.">
+
+<!-- Colore della barra del browser: cambia con il tema (lo aggiorno anche via JS) -->
+<meta name="theme-color" content="#05070d" id="metaTheme">
+
+<!-- PWA: manifest e icone -->
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="application-name" content="Cyber Hub">
+<meta name="apple-mobile-web-app-title" content="Cyber Hub">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+<!-- Open Graph: anteprima bella quando condividi il link (WhatsApp, Telegram, Facebook, LinkedIn...) -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="PezzaliApp Cyber Hub">
+<meta property="og:title" content="PezzaliApp · Cyber Hub">
+<meta property="og:description" content="Mappe di attacchi live, giochi formativi e corsi di cybersecurity in un'unica griglia. Gratis e installabile.">
+<meta property="og:locale" content="it_IT">
+<meta property="og:url" content="https://pezzaliapp.github.io/pezzaliapp-cyberhub/">
+<meta property="og:image" content="https://pezzaliapp.github.io/pezzaliapp-cyberhub/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Logo a scudo e scritta PezzaliApp Cyber Hub">
+<!-- Twitter/X usa le sue meta, ma legge anche le og: -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="PezzaliApp · Cyber Hub">
+<meta name="twitter:description" content="Mappe di attacchi live, giochi formativi e corsi di cybersecurity. Gratis e installabile.">
+<meta name="twitter:image" content="https://pezzaliapp.github.io/pezzaliapp-cyberhub/og-image.png">
+<link rel="canonical" href="https://pezzaliapp.github.io/pezzaliapp-cyberhub/">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -15,13 +48,32 @@
     --line:rgba(80,200,255,.14);
     --line-soft:rgba(80,200,255,.07);
     --txt:#d6e6f2;
-    --dim:#6f8198;
+    --dim:#8da3ba;            /* schiarito: contrasto migliore su sfondo scuro */
     --cyan:#22d3ee;
     --cyan-deep:#0891b2;
     --amber:#ffb347;
     --red:#ff4d5e;
     --green:#3ddc84;
     --violet:#a78bfa;
+    --focus:#7dd3fc;          /* colore dell'anello di focus da tastiera */
+    --grid-mask:radial-gradient(circle at 50% 30%, #000 0%, transparent 85%);
+  }
+  /* ---- TEMA CHIARO: ridefinisco solo le variabili, il resto del CSS resta uguale ---- */
+  [data-theme="light"]{
+    --bg:#eef2f7;
+    --bg2:#e2e8f1;
+    --panel:#ffffff;
+    --line:rgba(8,110,140,.22);
+    --line-soft:rgba(8,110,140,.10);
+    --txt:#0d1726;
+    --dim:#4a5b70;
+    --cyan:#0e7490;           /* ciano più scuro = leggibile su bianco */
+    --cyan-deep:#155e75;
+    --amber:#b45309;
+    --red:#dc2626;
+    --green:#15803d;
+    --violet:#6d28d9;
+    --focus:#0e7490;
   }
   *{box-sizing:border-box;margin:0;padding:0}
   html,body{height:100%}
@@ -35,6 +87,10 @@
     min-height:100%;
     overflow-x:hidden;
   }
+  /* nel tema chiaro tolgo i bagliori colorati e ammorbidisco lo sfondo */
+  [data-theme="light"] body{
+    background:linear-gradient(180deg, var(--bg), var(--bg2));
+  }
   /* griglia di sfondo + scanline */
   body::before{
     content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
@@ -42,14 +98,23 @@
       linear-gradient(var(--line-soft) 1px, transparent 1px),
       linear-gradient(90deg, var(--line-soft) 1px, transparent 1px);
     background-size:46px 46px;
-    mask-image:radial-gradient(circle at 50% 30%, #000 0%, transparent 85%);
+    mask-image:var(--grid-mask);
+    -webkit-mask-image:var(--grid-mask);
   }
   body::after{
     content:"";position:fixed;inset:0;pointer-events:none;z-index:1;opacity:.5;
     background:repeating-linear-gradient(0deg, rgba(0,0,0,0) 0px, rgba(0,0,0,0) 2px, rgba(0,0,0,.18) 3px);
     mix-blend-mode:multiply;
   }
+  [data-theme="light"] body::after{display:none}      /* niente scanline sul chiaro */
   .wrap{position:relative;z-index:2;max-width:1180px;margin:0 auto;padding:34px 22px 70px}
+
+  /* link "salta al contenuto" per chi naviga da tastiera/screen reader */
+  .skip{
+    position:absolute;left:-9999px;top:0;z-index:100;background:var(--cyan);color:#04121a;
+    padding:10px 16px;border-radius:8px;font-weight:600;text-decoration:none;
+  }
+  .skip:focus{left:12px;top:12px}
 
   /* HEADER */
   header{
@@ -64,6 +129,7 @@
     box-shadow:0 0 24px rgba(34,211,238,.25), inset 0 0 18px rgba(34,211,238,.12);
   }
   .logo svg{width:30px;height:30px}
+  .logo svg path{stroke:var(--cyan)}
   .logo::after{
     content:"";position:absolute;inset:-1px;border-radius:11px;
     border:1px solid transparent;
@@ -78,6 +144,7 @@
     font-size:clamp(26px,4vw,40px);line-height:.95;
   }
   h1 .acc{color:var(--cyan);text-shadow:0 0 18px rgba(34,211,238,.5)}
+  [data-theme="light"] h1 .acc{text-shadow:none}
   .tagline{color:var(--dim);font-size:12.5px;margin-top:7px;letter-spacing:.4px}
   .status{
     text-align:right;font-size:12px;color:var(--dim);line-height:1.9;min-width:200px;
@@ -88,6 +155,16 @@
   .status b{color:var(--txt);font-weight:600}
   #clock{color:var(--cyan)}
 
+  /* bottone tema (chiaro/scuro) */
+  .theme-btn{
+    margin-top:8px;display:inline-flex;align-items:center;gap:8px;cursor:pointer;
+    font-family:'Chakra Petch',sans-serif;font-size:12px;letter-spacing:.6px;
+    color:var(--txt);background:rgba(255,255,255,.03);border:1px solid var(--line);
+    padding:7px 12px;border-radius:999px;transition:.18s;
+  }
+  .theme-btn:hover{border-color:var(--cyan)}
+  .theme-btn svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.8}
+
   /* TOOLBAR */
   .toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:26px 0 28px}
   .filters{display:flex;flex-wrap:wrap;gap:8px}
@@ -96,15 +173,18 @@
     color:var(--dim);background:rgba(255,255,255,.02);border:1px solid var(--line);
     padding:8px 14px;border-radius:999px;cursor:pointer;transition:.18s;white-space:nowrap;
   }
+  [data-theme="light"] .chip{background:rgba(0,0,0,.02)}
   .chip:hover{color:var(--txt);border-color:var(--cyan)}
-  .chip.on{color:#04121a;background:var(--cyan);border-color:var(--cyan);
+  .chip[aria-pressed="true"]{color:#04121a;background:var(--cyan);border-color:var(--cyan);
     box-shadow:0 0 18px rgba(34,211,238,.4);font-weight:600}
+  [data-theme="light"] .chip[aria-pressed="true"]{color:#fff;box-shadow:none}
   .search{
     margin-left:auto;display:flex;align-items:center;gap:8px;flex:1;min-width:200px;max-width:300px;
     border:1px solid var(--line);border-radius:999px;padding:8px 14px;background:rgba(255,255,255,.02);
   }
+  [data-theme="light"] .search{background:rgba(0,0,0,.02)}
   .search:focus-within{border-color:var(--cyan);box-shadow:0 0 16px rgba(34,211,238,.2)}
-  .search svg{width:15px;height:15px;flex:none;stroke:var(--dim)}
+  .search svg{width:15px;height:15px;flex:none;stroke:var(--dim);fill:none;stroke-width:2;stroke-linecap:round}
   .search input{background:none;border:none;outline:none;color:var(--txt);font-family:inherit;font-size:13px;width:100%}
   .search input::placeholder{color:var(--dim)}
 
@@ -115,18 +195,20 @@
     font-family:'Chakra Petch',sans-serif;font-size:15px;letter-spacing:2px;text-transform:uppercase;
     color:var(--txt);font-weight:600;white-space:nowrap;
   }
-  .sec-head .ic{width:18px;height:18px;flex:none}
+  .sec-head .ic{width:18px;height:18px;flex:none;stroke:var(--cyan)}
   .sec-head .rule{flex:1;height:1px;background:linear-gradient(90deg,var(--line),transparent)}
   .sec-head .count{font-size:11px;color:var(--dim);letter-spacing:1px}
 
   /* GRID + CARDS */
   .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px}
   .card{
-    position:relative;display:block;text-decoration:none;color:inherit;
+    position:relative;display:block;text-align:left;width:100%;text-decoration:none;color:inherit;
     background:linear-gradient(180deg, var(--panel), rgba(8,13,24,.6));
     border:1px solid var(--line);border-radius:14px;padding:18px 18px 16px;
-    overflow:hidden;transition:transform .18s, border-color .18s, box-shadow .18s;
+    overflow:hidden;cursor:pointer;font-family:inherit;
+    transition:transform .18s, border-color .18s, box-shadow .18s;
   }
+  [data-theme="light"] .card{background:var(--panel)}
   .card::before{
     content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--accent,var(--cyan));
     box-shadow:0 0 14px var(--accent,var(--cyan));opacity:.85;
@@ -140,8 +222,9 @@
   .card p{font-size:12.5px;color:var(--dim);line-height:1.55;min-height:38px}
   .card .host{
     margin-top:13px;font-size:10.5px;letter-spacing:.5px;color:var(--accent,var(--cyan));
-    text-transform:lowercase;opacity:.8;display:flex;align-items:center;gap:6px;
+    text-transform:lowercase;opacity:.85;display:flex;align-items:center;gap:6px;
   }
+  [data-theme="light"] .card .host{color:var(--dim);opacity:1}
   .card .dot{width:5px;height:5px;border-radius:50%;background:var(--accent,var(--cyan))}
   .tag{
     font-size:9.5px;letter-spacing:1px;text-transform:uppercase;color:var(--dim);
@@ -149,25 +232,85 @@
   }
   /* card "lab" interna */
   .card.lab{background:linear-gradient(135deg, rgba(255,179,71,.06), rgba(8,13,24,.7));}
+  .card.soon{cursor:default}
   .card.soon .host{color:var(--amber)}
 
   footer{margin-top:46px;border-top:1px solid var(--line);padding-top:20px;
     display:flex;flex-wrap:wrap;gap:14px;justify-content:space-between;color:var(--dim);font-size:11.5px}
   footer a{color:var(--cyan);text-decoration:none}
   .no-results{color:var(--dim);font-size:13px;padding:20px 4px;display:none}
+  .load-msg{color:var(--dim);font-size:13px;padding:20px 4px;line-height:1.6}
+
+  /* ---- anello di focus visibile SOLO con la tastiera (accessibilità) ---- */
+  a:focus-visible, button:focus-visible, input:focus-visible, [tabindex]:focus-visible{
+    outline:2px solid var(--focus);outline-offset:3px;border-radius:8px;
+  }
+
+  /* ============ PANNELLO / VISUALIZZATORE INTERNO ============ */
+  .viewer{
+    position:fixed;inset:0;z-index:50;display:none;
+    background:rgba(3,5,10,.86);backdrop-filter:blur(4px);
+    flex-direction:column;
+  }
+  .viewer.open{display:flex}
+  .viewer-bar{
+    display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+    padding:12px 16px;padding-top:max(12px, env(safe-area-inset-top));
+    background:var(--panel);border-bottom:1px solid var(--line);
+  }
+  .vbtn{
+    display:inline-flex;align-items:center;gap:7px;cursor:pointer;white-space:nowrap;
+    font-family:'Chakra Petch',sans-serif;font-size:13px;letter-spacing:.5px;
+    color:var(--txt);background:rgba(255,255,255,.04);border:1px solid var(--line);
+    padding:9px 14px;border-radius:10px;transition:.18s;text-decoration:none;
+  }
+  [data-theme="light"] .vbtn{background:rgba(0,0,0,.03)}
+  .vbtn:hover{border-color:var(--cyan)}
+  .vbtn.primary{background:var(--cyan);color:#04121a;border-color:var(--cyan);font-weight:600}
+  [data-theme="light"] .vbtn.primary{color:#fff}
+  .viewer-title{font-family:'Chakra Petch',sans-serif;font-size:14px;font-weight:600;
+    margin-right:auto;display:flex;flex-direction:column;line-height:1.3;min-width:0}
+  .viewer-title small{font-size:10.5px;color:var(--dim);font-weight:400;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:60vw}
+  .viewer-body{position:relative;flex:1;background:var(--bg)}
+  .viewer-body iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:#fff}
+
+  /* schermata di attesa e avviso "non incorniciabile" dentro il pannello */
+  .viewer-overlay{
+    position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;
+    text-align:center;gap:16px;padding:30px;background:linear-gradient(180deg, var(--bg), var(--bg2));
+  }
+  .viewer-overlay.show{display:flex}
+  .viewer-overlay .ring{
+    width:46px;height:46px;border-radius:50%;border:3px solid var(--line);
+    border-top-color:var(--cyan);animation:spin 1s linear infinite;
+  }
+  .viewer-overlay h3{font-family:'Chakra Petch',sans-serif;font-size:18px}
+  .viewer-overlay p{color:var(--dim);font-size:13px;line-height:1.6;max-width:460px}
+  .viewer-overlay .ico{width:54px;height:54px;stroke:var(--amber);fill:none;stroke-width:1.6;
+    stroke-linecap:round;stroke-linejoin:round}
+  .viewer-overlay .row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+
+  /* meno animazioni per chi le ha disattivate nel sistema operativo */
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:.001ms !important;animation-iteration-count:1 !important;
+      transition-duration:.001ms !important;scroll-behavior:auto !important}
+  }
   @media(max-width:560px){
     .status{text-align:left;min-width:0}
     header{align-items:flex-start}
+    .viewer-title small{max-width:40vw}
   }
 </style>
 </head>
 <body>
+<a class="skip" href="#board">Salta al contenuto</a>
 <div class="wrap">
 
   <header>
     <div class="brand">
-      <div class="logo">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#22d3ee" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <div class="logo" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
           <path d="M12 2l8 3v6c0 5-3.4 8.4-8 11-4.6-2.6-8-6-8-11V5l8-3z"/>
           <path d="M9 12l2 2 4-4"/>
         </svg>
@@ -178,144 +321,173 @@
       </div>
     </div>
     <div class="status">
-      <div><span class="led"></span><b>SISTEMA ONLINE</b></div>
+      <div><span class="led" aria-hidden="true"></span><b>SISTEMA ONLINE</b></div>
       <div>ORARIO · <span id="clock">--:--:--</span></div>
       <div>RISORSE ATTIVE · <b id="resCount">0</b></div>
+      <button class="theme-btn" id="themeBtn" type="button" aria-pressed="false">
+        <svg id="themeIcon" viewBox="0 0 24 24" aria-hidden="true"></svg>
+        <span id="themeLabel">Tema</span>
+      </button>
     </div>
   </header>
 
   <div class="toolbar">
-    <div class="filters" id="filters">
-      <button class="chip on" data-f="all">Tutto</button>
-      <button class="chip" data-f="map">Mappe live</button>
-      <button class="chip" data-f="learn">Impara</button>
-      <button class="chip" data-f="read">Approfondisci</button>
-      <button class="chip" data-f="career">Formazione</button>
-      <button class="chip" data-f="lab">Il mio lab</button>
+    <div class="filters" id="filters" role="group" aria-label="Filtra le risorse per categoria">
+      <button class="chip" type="button" data-f="all" aria-pressed="true">Tutto</button>
+      <button class="chip" type="button" data-f="map" aria-pressed="false">Mappe live</button>
+      <button class="chip" type="button" data-f="learn" aria-pressed="false">Impara</button>
+      <button class="chip" type="button" data-f="read" aria-pressed="false">Approfondisci</button>
+      <button class="chip" type="button" data-f="career" aria-pressed="false">Formazione</button>
+      <button class="chip" type="button" data-f="lab" aria-pressed="false">Il mio lab</button>
     </div>
     <label class="search">
-      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>
-      <input id="search" type="text" placeholder="cerca una risorsa..." autocomplete="off">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>
+      <span class="sr-only" id="searchLbl" style="position:absolute;left:-9999px">Cerca una risorsa</span>
+      <input id="search" type="search" placeholder="cerca una risorsa..." autocomplete="off" aria-labelledby="searchLbl">
     </label>
   </div>
 
-  <div id="board"></div>
-  <div class="no-results" id="noRes">// nessuna risorsa corrisponde alla ricerca</div>
+  <main id="board" aria-live="polite" aria-busy="true">
+    <p class="load-msg" id="loadMsg">// carico le risorse…</p>
+  </main>
+  <p class="no-results" id="noRes">// nessuna risorsa corrisponde alla ricerca</p>
 
   <footer>
     <div>PezzaliApp Cyber Hub · costruita per imparare, non per attaccare · uso etico e legale</div>
-    <div>v1.0 · <a href="https://pages.github.com/" target="_blank" rel="noopener">pronta per GitHub Pages</a></div>
+    <div>v2.0 · <a href="https://pages.github.com/" target="_blank" rel="noopener">PWA · pronta per GitHub Pages</a></div>
   </footer>
+</div>
+
+<!-- ============ PANNELLO INTERNO (dialog) ============ -->
+<div class="viewer" id="viewer" role="dialog" aria-modal="true" aria-labelledby="viewerTitle" aria-hidden="true">
+  <div class="viewer-bar">
+    <button class="vbtn" id="viewerBack" type="button">← Torna al menu</button>
+    <span class="viewer-title">
+      <span id="viewerTitle">Risorsa</span>
+      <small id="viewerHost"></small>
+    </span>
+    <a class="vbtn primary" id="viewerNewTab" href="#" target="_blank" rel="noopener">Apri in nuova scheda ↗</a>
+  </div>
+  <div class="viewer-body">
+    <iframe id="viewerFrame" title="Contenuto della risorsa" referrerpolicy="no-referrer-when-downgrade"></iframe>
+
+    <!-- overlay di caricamento -->
+    <div class="viewer-overlay" id="viewerLoading">
+      <div class="ring" aria-hidden="true"></div>
+      <p>Carico la risorsa…</p>
+    </div>
+
+    <!-- overlay "non incorniciabile" -->
+    <div class="viewer-overlay" id="viewerBlocked">
+      <svg class="ico" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M12 2l8 3v6c0 5-3.4 8.4-8 11-4.6-2.6-8-6-8-11V5l8-3z"/>
+        <path d="M12 8v5M12 16v.5"/>
+      </svg>
+      <h3>Questo sito non si lascia incorniciare</h3>
+      <p id="viewerBlockedMsg">Per motivi di sicurezza molti siti (mappe live, piattaforme di corsi…) impediscono di essere mostrati dentro un'altra pagina. Aprilo in una nuova scheda: torni qui quando vuoi.</p>
+      <div class="row">
+        <a class="vbtn primary" id="viewerBlockedOpen" href="#" target="_blank" rel="noopener">Apri in nuova scheda ↗</a>
+        <button class="vbtn" id="viewerBlockedBack" type="button">← Torna al menu</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script>
 /* ============================================================
-   RISORSE — modifica/aggiungi qui sotto. Ogni voce:
-   { cat, title, desc, url, host, accent, tag }
-   cat: map | learn | read | career | lab
+   1) CARICAMENTO DATI da data.json (dati separati dal codice).
    ============================================================ */
-const DATA = [
-  // --- MAPPE LIVE ---
-  { cat:"map", accent:"#22d3ee", tag:"radar", title:"Kaspersky Cybermap", host:"cybermap.kaspersky.com",
-    desc:"Globo 3D con gli attacchi rilevati in tempo reale. La più spettacolare per il colpo d'occhio.",
-    url:"https://cybermap.kaspersky.com/" },
-  { cat:"map", accent:"#22d3ee", tag:"radar", title:"Check Point ThreatMap", host:"threatmap.checkpoint.com",
-    desc:"Visione ampia delle minacce globali, sorgenti e bersagli degli attacchi.",
-    url:"https://threatmap.checkpoint.com/" },
-  { cat:"map", accent:"#22d3ee", tag:"radar", title:"Radware Live Map", host:"livethreatmap.radware.com",
-    desc:"Attacchi in quasi tempo reale dalla rete di sensori (honeypot) di Radware.",
-    url:"https://livethreatmap.radware.com/" },
-  { cat:"map", accent:"#22d3ee", tag:"radar", title:"Fortinet ThreatMap", host:"fortiguard.fortinet.com",
-    desc:"Ottima per seguire vulnerabilità e nuove campagne di attacco.",
-    url:"https://fortiguard.fortinet.com/threat-map" },
-  { cat:"map", accent:"#22d3ee", tag:"ddos", title:"NETSCOUT Horizon", host:"horizon.netscout.com",
-    desc:"Il riferimento per gli attacchi DDoS: chi satura i server di traffico.",
-    url:"https://horizon.netscout.com/" },
-  { cat:"map", accent:"#22d3ee", tag:"radar", title:"SonicWall Attack Map", host:"attackmap.sonicwall.com",
-    desc:"Origini, bersagli e tipi di attacco principali, vista sintetica.",
-    url:"https://attackmap.sonicwall.com/live-attack-map/" },
+const board   = document.getElementById('board');
+const loadMsg = document.getElementById('loadMsg');
+let DATA = [], SECTIONS = [];
 
-  // --- IMPARA GIOCANDO / FACENDO ---
-  { cat:"learn", accent:"#3ddc84", tag:"gioco", title:"Case 404", host:"case404.kaspersky.com",
-    desc:"Gioco investigativo di Kaspersky: risolvi un attacco ragionando come un analista SOC.",
-    url:"https://case404.kaspersky.com/" },
-  { cat:"learn", accent:"#3ddc84", tag:"lab", title:"TryHackMe", host:"tryhackme.com",
-    desc:"Il miglior punto di partenza: percorsi guidati passo-passo, tutto nel browser.",
-    url:"https://tryhackme.com/" },
-  { cat:"learn", accent:"#3ddc84", tag:"lab", title:"Hack The Box", host:"hackthebox.com",
-    desc:"Laboratori più avanzati per mettere alla prova attacco e difesa in ambiente legale.",
-    url:"https://www.hackthebox.com/" },
-  { cat:"learn", accent:"#3ddc84", tag:"sfide", title:"OverTheWire", host:"overthewire.org",
-    desc:"Sfide da terminale, gratuite: imparare la riga di comando giocando.",
-    url:"https://overthewire.org/wargames/" },
+fetch('data.json', { cache: 'no-cache' })
+  .then(r => { if(!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+  .then(json => {
+    SECTIONS = json.sections || [];
+    DATA     = json.resources || [];
+    init();
+  })
+  .catch(err => {
+    // Tipico se apri il file con doppio click (protocollo file://): fetch è bloccato.
+    loadMsg.innerHTML =
+      '// non riesco a caricare <b>data.json</b>.<br>' +
+      'Se hai aperto il file con doppio click, avvia un piccolo server locale:<br>' +
+      '<code>python3 -m http.server</code> &nbsp;poi apri &nbsp;<code>http://localhost:8000</code><br>' +
+      'Online su GitHub Pages funziona senza fare nulla. (dettaglio: ' + err.message + ')';
+    board.setAttribute('aria-busy', 'false');
+  });
 
-  // --- APPROFONDISCI ---
-  { cat:"read", accent:"#a78bfa", tag:"dati", title:"Kaspersky Statistiche", host:"cybermap.kaspersky.com",
-    desc:"Numeri reali: rilevamenti al secondo, paesi più colpiti, malware più diffusi.",
-    url:"https://cybermap.kaspersky.com/stats" },
-  { cat:"read", accent:"#a78bfa", tag:"blog", title:"Kaspersky Buzz", host:"cybermap.kaspersky.com",
-    desc:"Notizie e analisi di sicurezza: ransomware, vulnerabilità, nuove campagne.",
-    url:"https://cybermap.kaspersky.com/buzz" },
-  { cat:"read", accent:"#a78bfa", tag:"glossario", title:"Risorse dati (sigle)", host:"cybermap.kaspersky.com",
-    desc:"Cosa significano OAS, IDS, RMW (ransomware) e le altre sigle delle mappe.",
-    url:"https://cybermap.kaspersky.com/subsystems" },
-
-  // --- FORMAZIONE / CARRIERA ---
-  { cat:"career", accent:"#ffb347", tag:"studio", title:"ITS Academy Abruzzo", host:"itsmeccanica.it",
-    desc:"Percorso post-diploma in informatica e cybersecurity, con stage in azienda. Da qui partono i video.",
-    url:"https://www.itsmeccanica.it/" },
-
-  // --- IL MIO LAB ---
-  { cat:"lab", accent:"#ffb347", tag:"progetto", soon:true, title:"Honeypot SOC", host:"in arrivo · gira in locale",
-    desc:"La tua esca che registra chi prova ad attaccarti, con dashboard stile SOC. Da avviare sul tuo PC o VPS.",
-    url:"#" },
-];
-
-/* ---- render ---- */
-const SECTIONS = [
-  { f:"map",    label:"Mappe live · radar",        ic:"M3 12h4l2 5 4-12 2 7h6" },
-  { f:"learn",  label:"Impara giocando",            ic:"M5 5h14v10H5zM9 19h6M12 15v4" },
-  { f:"read",   label:"Approfondisci",              ic:"M5 4h14v16l-7-3-7 3z" },
-  { f:"career", label:"Formazione e carriera",      ic:"M2 9l10-5 10 5-10 5zM6 11v5c0 1 6 3 6 3s6-2 6-3v-5" },
-  { f:"lab",    label:"Il mio lab",                 ic:"M9 3v7L4 19a2 2 0 002 3h12a2 2 0 002-3l-5-9V3M9 3h6" },
-];
-
-const board = document.getElementById('board');
-function cardHTML(r){
+/* ============================================================
+   2) RENDER della griglia (cards) raggruppate per sezione.
+   Ogni card è un <button>: accessibile da tastiera e apribile
+   nel pannello interno. Tengo anche l'URL reale come "data-url"
+   così Ctrl/Cmd+click o tasto centrale aprono in nuova scheda.
+   ============================================================ */
+function esc(s){ // piccola protezione: evita che testo nei dati rompa l'HTML
+  return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+}
+function cardHTML(r, i){
   const cls = "card" + (r.cat==="lab"?" lab":"") + (r.soon?" soon":"");
-  const target = r.soon ? "" : 'target="_blank" rel="noopener"';
-  return `<a class="${cls}" ${target} href="${r.url}" style="--accent:${r.accent}"
-            data-cat="${r.cat}" data-text="${(r.title+' '+r.desc+' '+r.host).toLowerCase()}">
-      <div class="top"><h3>${r.title}</h3><span class="arrow">↗</span></div>
-      <p>${r.desc}</p>
-      <div class="host"><span class="tag">${r.tag}</span><span class="dot"></span>${r.host}</div>
-    </a>`;
+  const text = (r.title+' '+r.desc+' '+r.host).toLowerCase();
+  if(r.soon){
+    // card informativa: non apre nulla
+    return `<article class="${cls}" style="--accent:${esc(r.accent)}" data-cat="${esc(r.cat)}" data-text="${esc(text)}">
+      <div class="top"><h3>${esc(r.title)}</h3><span class="arrow" aria-hidden="true">◷</span></div>
+      <p>${esc(r.desc)}</p>
+      <div class="host"><span class="tag">${esc(r.tag)}</span><span class="dot" aria-hidden="true"></span>${esc(r.host)}</div>
+    </article>`;
+  }
+  return `<button class="${cls}" type="button" style="--accent:${esc(r.accent)}"
+            data-i="${i}" data-cat="${esc(r.cat)}" data-text="${esc(text)}"
+            aria-label="${esc(r.title)} — apri nel pannello interno">
+      <div class="top"><h3>${esc(r.title)}</h3><span class="arrow" aria-hidden="true">↗</span></div>
+      <p>${esc(r.desc)}</p>
+      <div class="host"><span class="tag">${esc(r.tag)}</span><span class="dot" aria-hidden="true"></span>${esc(r.host)}</div>
+    </button>`;
 }
 function render(){
   board.innerHTML = SECTIONS.map(s=>{
-    const items = DATA.filter(d=>d.cat===s.f);
-    return `<section class="section" data-sec="${s.f}">
+    const items = DATA.map((d,i)=>({d,i})).filter(x=>x.d.cat===s.f);
+    return `<section class="section" data-sec="${esc(s.f)}" aria-label="${esc(s.label)}">
       <div class="sec-head">
-        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="${s.ic}"/></svg>
-        <h2>${s.label}</h2><div class="rule"></div>
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${s.ic}"/></svg>
+        <h2>${esc(s.label)}</h2><div class="rule"></div>
         <span class="count">${items.length} voci</span>
       </div>
-      <div class="grid">${items.map(cardHTML).join("")}</div>
+      <div class="grid">${items.map(x=>cardHTML(x.d, x.i)).join("")}</div>
     </section>`;
   }).join("");
+  board.setAttribute('aria-busy', 'false');
 }
-render();
-document.getElementById('resCount').textContent =
-  DATA.filter(d=>!d.soon).length;
 
-/* ---- filtri + ricerca ---- */
+/* ============================================================
+   3) AVVIO: render + collega filtri, ricerca, contatore, viewer.
+   ============================================================ */
+function init(){
+  render();
+  document.getElementById('resCount').textContent = DATA.filter(d=>!d.soon).length;
+
+  // click sulle card -> apre il pannello interno
+  board.addEventListener('click', e=>{
+    const btn = e.target.closest('.card');
+    if(!btn || btn.classList.contains('soon')) return;
+    const r = DATA[+btn.dataset.i];
+    if(r) openViewer(r);
+  });
+
+  apply(); // imposta lo stato iniziale dei filtri
+}
+
+/* ============================================================
+   4) FILTRI + RICERCA
+   ============================================================ */
 let activeF = "all", q = "";
 const noRes = document.getElementById('noRes');
 
 function apply(){
   let visible = 0;
   document.querySelectorAll('.section').forEach(sec=>{
-    const secF = sec.dataset.sec;
     let secVisible = 0;
     sec.querySelectorAll('.card').forEach(c=>{
       const okF = activeF==="all" || c.dataset.cat===activeF;
@@ -328,22 +500,144 @@ function apply(){
   });
   noRes.style.display = visible ? "none" : "block";
 }
-document.getElementById('filters').addEventListener('click',e=>{
+document.getElementById('filters').addEventListener('click', e=>{
   const b = e.target.closest('.chip'); if(!b) return;
-  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));
-  b.classList.add('on'); activeF = b.dataset.f; apply();
+  document.querySelectorAll('.chip').forEach(c=>c.setAttribute('aria-pressed','false'));
+  b.setAttribute('aria-pressed','true');
+  activeF = b.dataset.f; apply();
 });
-document.getElementById('search').addEventListener('input',e=>{
+document.getElementById('search').addEventListener('input', e=>{
   q = e.target.value.trim().toLowerCase(); apply();
 });
 
-/* ---- orologio ---- */
-function tick(){
-  const d = new Date();
-  document.getElementById('clock').textContent =
-    d.toLocaleTimeString('it-IT',{hour12:false});
+/* ============================================================
+   5) PANNELLO INTERNO (viewer) con "← Torna al menu".
+   - Se la risorsa ha embed:true -> provo a mostrarla in un iframe;
+     un timer di sicurezza mostra l'avviso se non si carica.
+   - Se embed non è true -> mostro subito l'avviso e il bottone
+     "Apri in nuova scheda" (gestione dei siti non incorniciabili).
+   ============================================================ */
+const viewer       = document.getElementById('viewer');
+const vFrame       = document.getElementById('viewerFrame');
+const vTitle       = document.getElementById('viewerTitle');
+const vHost        = document.getElementById('viewerHost');
+const vNewTab      = document.getElementById('viewerNewTab');
+const vLoading     = document.getElementById('viewerLoading');
+const vBlocked     = document.getElementById('viewerBlocked');
+const vBlockedOpen = document.getElementById('viewerBlockedOpen');
+let lastFocus = null, loadTimer = null;
+
+function openViewer(r){
+  lastFocus = document.activeElement;          // ricordo dov'ero, per tornarci alla chiusura
+  vTitle.textContent = r.title;
+  vHost.textContent  = r.host;
+  vNewTab.href       = r.url;
+  vBlockedOpen.href  = r.url;
+
+  vBlocked.classList.remove('show');
+  vLoading.classList.remove('show');
+  clearTimeout(loadTimer);
+  vFrame.src = 'about:blank';
+
+  if(r.embed === true){
+    // provo a incorniciare
+    vLoading.classList.add('show');
+    vFrame.src = r.url;
+    vFrame.onload = ()=>{ clearTimeout(loadTimer); vLoading.classList.remove('show'); };
+    // rete di sicurezza: se in 6s non si è caricato, mostro l'avviso
+    loadTimer = setTimeout(()=>{ vLoading.classList.remove('show'); vBlocked.classList.add('show'); }, 6000);
+  } else {
+    // sito che rifiuta l'iframe: niente pagina rotta, mostro subito l'avviso
+    vBlocked.classList.add('show');
+  }
+
+  viewer.classList.add('open');
+  viewer.setAttribute('aria-hidden','false');
+  document.body.style.overflow = 'hidden';     // blocco lo scroll dietro
+  document.getElementById('viewerBack').focus();
+  document.addEventListener('keydown', onViewerKey);
 }
-tick(); setInterval(tick,1000);
+
+function closeViewer(){
+  viewer.classList.remove('open');
+  viewer.setAttribute('aria-hidden','true');
+  clearTimeout(loadTimer);
+  vFrame.src = 'about:blank';                   // fermo il sito (audio/rete)
+  document.body.style.overflow = '';
+  document.removeEventListener('keydown', onViewerKey);
+  if(lastFocus && lastFocus.focus) lastFocus.focus();  // torno alla card di partenza
+}
+
+/* Tastiera nel pannello: ESC chiude, TAB resta intrappolato nel dialog */
+function onViewerKey(e){
+  if(e.key === 'Escape'){ closeViewer(); return; }
+  if(e.key === 'Tab'){
+    const f = viewer.querySelectorAll('button, a[href], iframe');
+    const list = Array.from(f).filter(el=>el.offsetParent !== null || el === vFrame);
+    if(!list.length) return;
+    const first = list[0], last = list[list.length-1];
+    if(e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
+    else if(!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
+  }
+}
+
+document.getElementById('viewerBack').addEventListener('click', closeViewer);
+document.getElementById('viewerBlockedBack').addEventListener('click', closeViewer);
+// chiudo se clicco sullo sfondo scuro (fuori dalla barra e dal contenuto)
+viewer.addEventListener('mousedown', e=>{ if(e.target === viewer) closeViewer(); });
+
+/* ============================================================
+   6) TEMA chiaro/scuro con memoria (localStorage).
+   ============================================================ */
+const SUN  = '<path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M18.4 5.6L17 7M7 17l-1.4 1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.8"/>';
+const MOON = '<path d="M21 12.8A9 9 0 1111.2 3 7 7 0 0021 12.8z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>';
+const themeBtn   = document.getElementById('themeBtn');
+const themeIcon  = document.getElementById('themeIcon');
+const themeLabel = document.getElementById('themeLabel');
+const metaTheme  = document.getElementById('metaTheme');
+
+function applyTheme(mode){
+  const light = mode === 'light';
+  document.documentElement.setAttribute('data-theme', light ? 'light' : 'dark');
+  // il bottone mostra l'icona dell'azione che farà al prossimo click
+  themeIcon.innerHTML = light ? MOON : SUN;
+  themeLabel.textContent = light ? 'Scuro' : 'Chiaro';
+  themeBtn.setAttribute('aria-pressed', String(light));
+  themeBtn.setAttribute('aria-label', light ? 'Passa al tema scuro' : 'Passa al tema chiaro');
+  metaTheme.setAttribute('content', light ? '#eef2f7' : '#05070d');
+}
+// scelta iniziale: 1) quella salvata  2) preferenza del sistema operativo
+const saved = localStorage.getItem('cyberhub-theme');
+const prefersLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+applyTheme(saved || (prefersLight ? 'light' : 'dark'));
+
+themeBtn.addEventListener('click', ()=>{
+  const now = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+  applyTheme(now);
+  localStorage.setItem('cyberhub-theme', now);   // ricordo la scelta
+});
+
+/* ============================================================
+   7) OROLOGIO
+   ============================================================ */
+function tick(){
+  document.getElementById('clock').textContent =
+    new Date().toLocaleTimeString('it-IT', { hour12:false });
+}
+tick(); setInterval(tick, 1000);
+
+/* ============================================================
+   8) SERVICE WORKER: registra la PWA (offline + installabile).
+   Funziona solo su https o localhost (quindi su GitHub Pages sì,
+   col doppio click no): per questo lo avvolgo in un try.
+   ============================================================ */
+if('serviceWorker' in navigator){
+  window.addEventListener('load', ()=>{
+    navigator.serviceWorker.register('sw.js').catch(err=>{
+      console.warn('Service worker non registrato:', err.message);
+    });
+  });
+}
 </script>
 </body>
 </html>
