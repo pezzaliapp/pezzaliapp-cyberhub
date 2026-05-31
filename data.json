@@ -50,9 +50,9 @@
       "desc": "Cosa significano OAS, IDS, RMW (ransomware) e le altre sigle delle mappe.",
       "url": "https://cybermap.kaspersky.com/subsystems" },
 
-    { "cat": "career", "accent": "#ffb347", "tag": "studio", "embed": true, "title": "ITS Academy Abruzzo", "host": "itsmeccanica.it",
+    { "cat": "career", "accent": "#ffb347", "tag": "studio", "embed": false, "title": "ITS Academy Abruzzo", "host": "itsmeccanicabruzzo.eu",
       "desc": "Percorso post-diploma in informatica e cybersecurity, con stage in azienda. Da qui partono i video.",
-      "url": "https://www.itsmeccanica.it/" },
+      "url": "https://itsmeccanicabruzzo.eu/" },
 
     { "cat": "lab", "accent": "#ffb347", "tag": "progetto", "soon": true, "title": "Honeypot SOC", "host": "in arrivo · gira in locale",
       "desc": "La tua esca che registra chi prova ad attaccarti, con dashboard stile SOC. Da avviare sul tuo PC o VPS.",

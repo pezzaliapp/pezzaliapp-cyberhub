@@ -8,7 +8,7 @@
    sotto (es. v2): così il browser scarica la nuova cache e butta
    quella vecchia.
    ============================================================ */
-const CACHE = "cyberhub-v1";
+const CACHE = "cyberhub-v2";
 
 /* L'app shell: i file minimi che servono per mostrare l'interfaccia.
    Percorsi RELATIVI così funziona anche sotto /pezzaliapp-cyberhub/ su GitHub Pages. */
