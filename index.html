@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PezzaliApp · Cyber Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#05070d;
+    --bg2:#080d18;
+    --panel:#0b1320;
+    --line:rgba(80,200,255,.14);
+    --line-soft:rgba(80,200,255,.07);
+    --txt:#d6e6f2;
+    --dim:#6f8198;
+    --cyan:#22d3ee;
+    --cyan-deep:#0891b2;
+    --amber:#ffb347;
+    --red:#ff4d5e;
+    --green:#3ddc84;
+    --violet:#a78bfa;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    background:
+      radial-gradient(1200px 600px at 80% -10%, rgba(34,211,238,.10), transparent 60%),
+      radial-gradient(900px 500px at 0% 110%, rgba(167,139,250,.08), transparent 55%),
+      linear-gradient(180deg, var(--bg), var(--bg2));
+    color:var(--txt);
+    font-family:'IBM Plex Mono', ui-monospace, monospace;
+    min-height:100%;
+    overflow-x:hidden;
+  }
+  /* griglia di sfondo + scanline */
+  body::before{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+    background-image:
+      linear-gradient(var(--line-soft) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line-soft) 1px, transparent 1px);
+    background-size:46px 46px;
+    mask-image:radial-gradient(circle at 50% 30%, #000 0%, transparent 85%);
+  }
+  body::after{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:1;opacity:.5;
+    background:repeating-linear-gradient(0deg, rgba(0,0,0,0) 0px, rgba(0,0,0,0) 2px, rgba(0,0,0,.18) 3px);
+    mix-blend-mode:multiply;
+  }
+  .wrap{position:relative;z-index:2;max-width:1180px;margin:0 auto;padding:34px 22px 70px}
+
+  /* HEADER */
+  header{
+    display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;
+    gap:18px;border-bottom:1px solid var(--line);padding-bottom:22px;margin-bottom:10px;
+  }
+  .brand{display:flex;align-items:center;gap:16px}
+  .logo{
+    width:54px;height:54px;flex:none;border:1px solid var(--cyan);border-radius:11px;
+    display:grid;place-items:center;position:relative;
+    background:radial-gradient(circle at 50% 40%, rgba(34,211,238,.22), transparent 70%);
+    box-shadow:0 0 24px rgba(34,211,238,.25), inset 0 0 18px rgba(34,211,238,.12);
+  }
+  .logo svg{width:30px;height:30px}
+  .logo::after{
+    content:"";position:absolute;inset:-1px;border-radius:11px;
+    border:1px solid transparent;
+    background:conic-gradient(from 0deg, transparent, var(--cyan), transparent 40%) border-box;
+    -webkit-mask:linear-gradient(#000 0 0) padding-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite:xor;mask-composite:exclude;
+    animation:spin 6s linear infinite;opacity:.6;
+  }
+  @keyframes spin{to{transform:rotate(360deg)}}
+  h1{
+    font-family:'Chakra Petch',sans-serif;font-weight:700;letter-spacing:.5px;
+    font-size:clamp(26px,4vw,40px);line-height:.95;
+  }
+  h1 .acc{color:var(--cyan);text-shadow:0 0 18px rgba(34,211,238,.5)}
+  .tagline{color:var(--dim);font-size:12.5px;margin-top:7px;letter-spacing:.4px}
+  .status{
+    text-align:right;font-size:12px;color:var(--dim);line-height:1.9;min-width:200px;
+  }
+  .led{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--green);
+    box-shadow:0 0 10px var(--green);margin-right:7px;animation:pulse 1.6s ease-in-out infinite}
+  @keyframes pulse{50%{opacity:.35}}
+  .status b{color:var(--txt);font-weight:600}
+  #clock{color:var(--cyan)}
+
+  /* TOOLBAR */
+  .toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:26px 0 28px}
+  .filters{display:flex;flex-wrap:wrap;gap:8px}
+  .chip{
+    font-family:'Chakra Petch',sans-serif;font-size:12.5px;letter-spacing:.6px;
+    color:var(--dim);background:rgba(255,255,255,.02);border:1px solid var(--line);
+    padding:8px 14px;border-radius:999px;cursor:pointer;transition:.18s;white-space:nowrap;
+  }
+  .chip:hover{color:var(--txt);border-color:var(--cyan)}
+  .chip.on{color:#04121a;background:var(--cyan);border-color:var(--cyan);
+    box-shadow:0 0 18px rgba(34,211,238,.4);font-weight:600}
+  .search{
+    margin-left:auto;display:flex;align-items:center;gap:8px;flex:1;min-width:200px;max-width:300px;
+    border:1px solid var(--line);border-radius:999px;padding:8px 14px;background:rgba(255,255,255,.02);
+  }
+  .search:focus-within{border-color:var(--cyan);box-shadow:0 0 16px rgba(34,211,238,.2)}
+  .search svg{width:15px;height:15px;flex:none;stroke:var(--dim)}
+  .search input{background:none;border:none;outline:none;color:var(--txt);font-family:inherit;font-size:13px;width:100%}
+  .search input::placeholder{color:var(--dim)}
+
+  /* SECTIONS */
+  .section{margin-bottom:34px}
+  .sec-head{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+  .sec-head h2{
+    font-family:'Chakra Petch',sans-serif;font-size:15px;letter-spacing:2px;text-transform:uppercase;
+    color:var(--txt);font-weight:600;white-space:nowrap;
+  }
+  .sec-head .ic{width:18px;height:18px;flex:none}
+  .sec-head .rule{flex:1;height:1px;background:linear-gradient(90deg,var(--line),transparent)}
+  .sec-head .count{font-size:11px;color:var(--dim);letter-spacing:1px}
+
+  /* GRID + CARDS */
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px}
+  .card{
+    position:relative;display:block;text-decoration:none;color:inherit;
+    background:linear-gradient(180deg, var(--panel), rgba(8,13,24,.6));
+    border:1px solid var(--line);border-radius:14px;padding:18px 18px 16px;
+    overflow:hidden;transition:transform .18s, border-color .18s, box-shadow .18s;
+  }
+  .card::before{
+    content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--accent,var(--cyan));
+    box-shadow:0 0 14px var(--accent,var(--cyan));opacity:.85;
+  }
+  .card:hover{transform:translateY(-4px);border-color:var(--accent,var(--cyan));
+    box-shadow:0 10px 34px rgba(0,0,0,.5), 0 0 24px rgba(34,211,238,.12)}
+  .card .top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+  .card h3{font-family:'Chakra Petch',sans-serif;font-size:16px;font-weight:600;letter-spacing:.3px}
+  .card .arrow{font-size:15px;color:var(--dim);transition:.18s}
+  .card:hover .arrow{color:var(--accent,var(--cyan));transform:translate(3px,-3px)}
+  .card p{font-size:12.5px;color:var(--dim);line-height:1.55;min-height:38px}
+  .card .host{
+    margin-top:13px;font-size:10.5px;letter-spacing:.5px;color:var(--accent,var(--cyan));
+    text-transform:lowercase;opacity:.8;display:flex;align-items:center;gap:6px;
+  }
+  .card .dot{width:5px;height:5px;border-radius:50%;background:var(--accent,var(--cyan))}
+  .tag{
+    font-size:9.5px;letter-spacing:1px;text-transform:uppercase;color:var(--dim);
+    border:1px solid var(--line);border-radius:5px;padding:3px 7px;
+  }
+  /* card "lab" interna */
+  .card.lab{background:linear-gradient(135deg, rgba(255,179,71,.06), rgba(8,13,24,.7));}
+  .card.soon .host{color:var(--amber)}
+
+  footer{margin-top:46px;border-top:1px solid var(--line);padding-top:20px;
+    display:flex;flex-wrap:wrap;gap:14px;justify-content:space-between;color:var(--dim);font-size:11.5px}
+  footer a{color:var(--cyan);text-decoration:none}
+  .no-results{color:var(--dim);font-size:13px;padding:20px 4px;display:none}
+  @media(max-width:560px){
+    .status{text-align:left;min-width:0}
+    header{align-items:flex-start}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="brand">
+      <div class="logo">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#22d3ee" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2l8 3v6c0 5-3.4 8.4-8 11-4.6-2.6-8-6-8-11V5l8-3z"/>
+          <path d="M9 12l2 2 4-4"/>
+        </svg>
+      </div>
+      <div>
+        <h1>PEZZALI<span class="acc">APP</span> · CYBER HUB</h1>
+        <div class="tagline">// punto di comando — mappe live, formazione e analisi delle minacce informatiche</div>
+      </div>
+    </div>
+    <div class="status">
+      <div><span class="led"></span><b>SISTEMA ONLINE</b></div>
+      <div>ORARIO · <span id="clock">--:--:--</span></div>
+      <div>RISORSE ATTIVE · <b id="resCount">0</b></div>
+    </div>
+  </header>
+
+  <div class="toolbar">
+    <div class="filters" id="filters">
+      <button class="chip on" data-f="all">Tutto</button>
+      <button class="chip" data-f="map">Mappe live</button>
+      <button class="chip" data-f="learn">Impara</button>
+      <button class="chip" data-f="read">Approfondisci</button>
+      <button class="chip" data-f="career">Formazione</button>
+      <button class="chip" data-f="lab">Il mio lab</button>
+    </div>
+    <label class="search">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>
+      <input id="search" type="text" placeholder="cerca una risorsa..." autocomplete="off">
+    </label>
+  </div>
+
+  <div id="board"></div>
+  <div class="no-results" id="noRes">// nessuna risorsa corrisponde alla ricerca</div>
+
+  <footer>
+    <div>PezzaliApp Cyber Hub · costruita per imparare, non per attaccare · uso etico e legale</div>
+    <div>v1.0 · <a href="https://pages.github.com/" target="_blank" rel="noopener">pronta per GitHub Pages</a></div>
+  </footer>
+</div>
+
+<script>
+/* ============================================================
+   RISORSE — modifica/aggiungi qui sotto. Ogni voce:
+   { cat, title, desc, url, host, accent, tag }
+   cat: map | learn | read | career | lab
+   ============================================================ */
+const DATA = [
+  // --- MAPPE LIVE ---
+  { cat:"map", accent:"#22d3ee", tag:"radar", title:"Kaspersky Cybermap", host:"cybermap.kaspersky.com",
+    desc:"Globo 3D con gli attacchi rilevati in tempo reale. La più spettacolare per il colpo d'occhio.",
+    url:"https://cybermap.kaspersky.com/" },
+  { cat:"map", accent:"#22d3ee", tag:"radar", title:"Check Point ThreatMap", host:"threatmap.checkpoint.com",
+    desc:"Visione ampia delle minacce globali, sorgenti e bersagli degli attacchi.",
+    url:"https://threatmap.checkpoint.com/" },
+  { cat:"map", accent:"#22d3ee", tag:"radar", title:"Radware Live Map", host:"livethreatmap.radware.com",
+    desc:"Attacchi in quasi tempo reale dalla rete di sensori (honeypot) di Radware.",
+    url:"https://livethreatmap.radware.com/" },
+  { cat:"map", accent:"#22d3ee", tag:"radar", title:"Fortinet ThreatMap", host:"fortiguard.fortinet.com",
+    desc:"Ottima per seguire vulnerabilità e nuove campagne di attacco.",
+    url:"https://fortiguard.fortinet.com/threat-map" },
+  { cat:"map", accent:"#22d3ee", tag:"ddos", title:"NETSCOUT Horizon", host:"horizon.netscout.com",
+    desc:"Il riferimento per gli attacchi DDoS: chi satura i server di traffico.",
+    url:"https://horizon.netscout.com/" },
+  { cat:"map", accent:"#22d3ee", tag:"radar", title:"SonicWall Attack Map", host:"attackmap.sonicwall.com",
+    desc:"Origini, bersagli e tipi di attacco principali, vista sintetica.",
+    url:"https://attackmap.sonicwall.com/live-attack-map/" },
+
+  // --- IMPARA GIOCANDO / FACENDO ---
+  { cat:"learn", accent:"#3ddc84", tag:"gioco", title:"Case 404", host:"case404.kaspersky.com",
+    desc:"Gioco investigativo di Kaspersky: risolvi un attacco ragionando come un analista SOC.",
+    url:"https://case404.kaspersky.com/" },
+  { cat:"learn", accent:"#3ddc84", tag:"lab", title:"TryHackMe", host:"tryhackme.com",
+    desc:"Il miglior punto di partenza: percorsi guidati passo-passo, tutto nel browser.",
+    url:"https://tryhackme.com/" },
+  { cat:"learn", accent:"#3ddc84", tag:"lab", title:"Hack The Box", host:"hackthebox.com",
+    desc:"Laboratori più avanzati per mettere alla prova attacco e difesa in ambiente legale.",
+    url:"https://www.hackthebox.com/" },
+  { cat:"learn", accent:"#3ddc84", tag:"sfide", title:"OverTheWire", host:"overthewire.org",
+    desc:"Sfide da terminale, gratuite: imparare la riga di comando giocando.",
+    url:"https://overthewire.org/wargames/" },
+
+  // --- APPROFONDISCI ---
+  { cat:"read", accent:"#a78bfa", tag:"dati", title:"Kaspersky Statistiche", host:"cybermap.kaspersky.com",
+    desc:"Numeri reali: rilevamenti al secondo, paesi più colpiti, malware più diffusi.",
+    url:"https://cybermap.kaspersky.com/stats" },
+  { cat:"read", accent:"#a78bfa", tag:"blog", title:"Kaspersky Buzz", host:"cybermap.kaspersky.com",
+    desc:"Notizie e analisi di sicurezza: ransomware, vulnerabilità, nuove campagne.",
+    url:"https://cybermap.kaspersky.com/buzz" },
+  { cat:"read", accent:"#a78bfa", tag:"glossario", title:"Risorse dati (sigle)", host:"cybermap.kaspersky.com",
+    desc:"Cosa significano OAS, IDS, RMW (ransomware) e le altre sigle delle mappe.",
+    url:"https://cybermap.kaspersky.com/subsystems" },
+
+  // --- FORMAZIONE / CARRIERA ---
+  { cat:"career", accent:"#ffb347", tag:"studio", title:"ITS Academy Abruzzo", host:"itsmeccanica.it",
+    desc:"Percorso post-diploma in informatica e cybersecurity, con stage in azienda. Da qui partono i video.",
+    url:"https://www.itsmeccanica.it/" },
+
+  // --- IL MIO LAB ---
+  { cat:"lab", accent:"#ffb347", tag:"progetto", soon:true, title:"Honeypot SOC", host:"in arrivo · gira in locale",
+    desc:"La tua esca che registra chi prova ad attaccarti, con dashboard stile SOC. Da avviare sul tuo PC o VPS.",
+    url:"#" },
+];
+
+/* ---- render ---- */
+const SECTIONS = [
+  { f:"map",    label:"Mappe live · radar",        ic:"M3 12h4l2 5 4-12 2 7h6" },
+  { f:"learn",  label:"Impara giocando",            ic:"M5 5h14v10H5zM9 19h6M12 15v4" },
+  { f:"read",   label:"Approfondisci",              ic:"M5 4h14v16l-7-3-7 3z" },
+  { f:"career", label:"Formazione e carriera",      ic:"M2 9l10-5 10 5-10 5zM6 11v5c0 1 6 3 6 3s6-2 6-3v-5" },
+  { f:"lab",    label:"Il mio lab",                 ic:"M9 3v7L4 19a2 2 0 002 3h12a2 2 0 002-3l-5-9V3M9 3h6" },
+];
+
+const board = document.getElementById('board');
+function cardHTML(r){
+  const cls = "card" + (r.cat==="lab"?" lab":"") + (r.soon?" soon":"");
+  const target = r.soon ? "" : 'target="_blank" rel="noopener"';
+  return `<a class="${cls}" ${target} href="${r.url}" style="--accent:${r.accent}"
+            data-cat="${r.cat}" data-text="${(r.title+' '+r.desc+' '+r.host).toLowerCase()}">
+      <div class="top"><h3>${r.title}</h3><span class="arrow">↗</span></div>
+      <p>${r.desc}</p>
+      <div class="host"><span class="tag">${r.tag}</span><span class="dot"></span>${r.host}</div>
+    </a>`;
+}
+function render(){
+  board.innerHTML = SECTIONS.map(s=>{
+    const items = DATA.filter(d=>d.cat===s.f);
+    return `<section class="section" data-sec="${s.f}">
+      <div class="sec-head">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="${s.ic}"/></svg>
+        <h2>${s.label}</h2><div class="rule"></div>
+        <span class="count">${items.length} voci</span>
+      </div>
+      <div class="grid">${items.map(cardHTML).join("")}</div>
+    </section>`;
+  }).join("");
+}
+render();
+document.getElementById('resCount').textContent =
+  DATA.filter(d=>!d.soon).length;
+
+/* ---- filtri + ricerca ---- */
+let activeF = "all", q = "";
+const noRes = document.getElementById('noRes');
+
+function apply(){
+  let visible = 0;
+  document.querySelectorAll('.section').forEach(sec=>{
+    const secF = sec.dataset.sec;
+    let secVisible = 0;
+    sec.querySelectorAll('.card').forEach(c=>{
+      const okF = activeF==="all" || c.dataset.cat===activeF;
+      const okQ = !q || c.dataset.text.includes(q);
+      const show = okF && okQ;
+      c.style.display = show ? "" : "none";
+      if(show){secVisible++;visible++;}
+    });
+    sec.style.display = secVisible ? "" : "none";
+  });
+  noRes.style.display = visible ? "none" : "block";
+}
+document.getElementById('filters').addEventListener('click',e=>{
+  const b = e.target.closest('.chip'); if(!b) return;
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));
+  b.classList.add('on'); activeF = b.dataset.f; apply();
+});
+document.getElementById('search').addEventListener('input',e=>{
+  q = e.target.value.trim().toLowerCase(); apply();
+});
+
+/* ---- orologio ---- */
+function tick(){
+  const d = new Date();
+  document.getElementById('clock').textContent =
+    d.toLocaleTimeString('it-IT',{hour12:false});
+}
+tick(); setInterval(tick,1000);
+</script>
+</body>
+</html>
